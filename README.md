@@ -10,7 +10,7 @@ cp .env.sample .env
 ```
 
 ```shell
-npx hardhat node --fork <MAINNET_FORK_NIDE_URL>
+npx hardhat node --fork <MAINNET_FORK_NODE_URL>
 or
 source .env
 npx hardhat node --fork $NODE_URL
