@@ -38,7 +38,6 @@ describe("TestCollateralSwap", () => {
   let token: any;
   let accounts: any = [];
   beforeEach(async () => {
-    // accounts = await ethers.getSigners();
     accounts = await ethers.getSigners();
     // await Promise.all(
     //   [0, 1, 2, 3, 4, 5].map(async (idx) => {
@@ -58,13 +57,7 @@ describe("TestCollateralSwap", () => {
       value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
     });
 
-    const bal = await token.balanceOf(WHALE);
-    console.log(bal);
-    // assert(bal.gte(FUND_AMOUNT), "balance < FUND")
-    // await token.transfer(testAaveFlashLoan.address, FUND_AMOUNT, {
-    //   from: WHALE,
-    // })
-
+    await token.balanceOf(WHALE);
     const CollateralSwap = await ethers.getContractFactory("CollateralSwap");
     collateralSwap = await CollateralSwap.attach(ADDRESS_PROVIDER);
   });
@@ -106,21 +99,26 @@ describe("TestCollateralSwap", () => {
     // assert(bHealthFactor > aHealthFactor);
   });
 
-  it("Collateral Swap", async () => {
-    const amount = 20 * 10 ** 10; // I have ether to supply 20 ether
-    await expect(collateralSwap.supply(WETH, amount, collateralSwap.address, 0))
-      .to.eventually.be.fulfilled;
-
-    // const bHealthFactor = await collateralSwap.getUserAccountData(
-    //   accounts[1].address
-    // );
-    // console.log(bHealthFactor);
+  it("Testing Collateral Swap", async () => {
+    // let's borrow after supplying WETH
+    const supplied_weth = ethers.utils.parseEther("100.0");
     await expect(
-      collateralSwap.getCollateralLoan(USDT, 1000, 1, 0, accounts[0].address)
+      collateralSwap.supply(WETH, supplied_weth, collateralSwap.address, 0)
     ).to.eventually.be.fulfilled;
-    // const aHealthFactor = await collateralSwap.getUserAccountData(
-    //   accounts[1].address
-    // );
-    // assert(bHealthFactor > aHealthFactor);
+    // let's borrow DAI by giving WETH.
+    const borrowed_amount = ethers.utils.parseEther("100.0");
+    await expect(
+      collateralSwap.getCollateralLoan(
+        DAI,
+        borrowed_amount,
+        1,
+        0,
+        accounts[0].address
+      )
+    ).to.eventually.be.fulfilled;
+    // let's swap collateral WETH with USDT
+    let amount = ethers.utils.parseEther("110.0");
+    await expect(collateralSwap.collateralSwap(DAI, amount, 1, 1)).to.eventually
+      .be.fulfilled;
   });
 });
