@@ -1,6 +1,20 @@
 # Collateral Swap On Aave
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This project demonstrates a collateral swap on Aave.
+
+```shell
+virtualenv -p python3 venv
+source venv/bin/activate
+pip install vyper
+cp .env.sample .env
+```
+
+```shell
+npx hardhat node --fork <MAINNET_FORK_NIDE_URL>
+or
+source .env
+npx hardhat node --fork $NODE_URL
+```
 
 Try running some of the following tasks:
 
